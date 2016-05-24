@@ -1,0 +1,52 @@
+#!/usr/bin/env ansible-playbook
+---
+- name: deploy ss
+  hosts: all
+  remote_user: root
+  vars:
+    - ss_root: /opt/ss
+    - log_path: /var/log/ss
+  tasks:
+    - name: install python, pip, and virtualenv
+      yum: name={{ item }} state=latest
+      with_items:
+        - epel-release
+        - python
+        - python-pip
+        - python-virtualenv
+
+    - name: create necessary directories
+      file: >
+        path={{ item }}
+        mode=0755
+        state=directory
+      with_items:
+        - "{{ ss_root }}"
+        - "{{ log_path }}"
+
+    - name: create virtualenv
+      shell: >
+        virtualenv -p /usr/bin/python {{ ss_root }};
+        virtualenv --relocatable {{ ss_root }};
+
+    - name: install shadowsocks and supervisor to virtualenv
+      shell: >
+        source {{ ss_root }}/bin/activate;
+        pip install supervisor shadowsocks
+
+    - name: render supervisor.conf and ss.conf
+      template: >
+        src=./template/{{ item }}.j2
+        dest={{ ss_root }}/{{ item }}
+        mode=0644
+      with_items:
+        - supervisor.conf
+        - ss.conf
+
+    - name: render sssuper
+      template: >
+        src=./template/{{ item }}.j2
+        dest={{ ss_root }}/{{ item }}
+        mode=0655
+      with_items:
+        - sssuper

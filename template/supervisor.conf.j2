@@ -1,0 +1,32 @@
+[supervisord]
+logfile={{ log_path }}/supervisor.log
+logfile_maxbytes=10MB
+logfile_backups=5
+pidfile={{ log_path }}/supervisor.pid
+
+[unix_http_server]
+file={{ log_path }}/supervisor.sock
+
+# if you like to turn on inet_http_server, replace unix_http_server with
+# following lines. this will enable you to use supervisorctl -s URL to check
+# supervisord status remotely but of course unsafely
+# [inet_http_server]
+# port=0.0.0.0:<port>
+# username=<username>
+# password=<password>
+
+[supervisorctl]
+serverurl=unix://{{ log_path }}/supervisor.sock
+
+[rpcinterface:supervisor]
+supervisor.rpcinterface_factory=supervisor.rpcinterface:make_main_rpcinterface
+
+[program:ss]
+command={{ ss_root }}/bin/ssserver -c {{ ss_root }}/ss.conf
+autorestart=true
+stopasgroup=true
+killasgroup=true
+stdout_logfile={{ log_path }}/%(program_name)s.log
+stdout_logfile_maxbytes=10MB
+stdout_logfile_backups=5
+redirect_stderr=true

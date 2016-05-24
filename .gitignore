@@ -1,0 +1,3 @@
+*.swp
+hosts
+template/ss.conf.j2

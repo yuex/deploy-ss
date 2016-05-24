@@ -1,0 +1,26 @@
+#!/usr/bin/env sh
+
+CONFIG={{ ss_root }}/supervisor.conf
+SUPERD_CMD={{ ss_root }}/bin/supervisord
+SUPERC_CMD={{ ss_root }}/bin/supervisorctl
+
+supervisord_start () {
+    ${SUPERD_CMD} -c ${CONFIG}
+}
+
+supervisorctl_cmd () {
+    ${SUPERC_CMD} -c ${CONFIG} $*
+}
+
+if [ $# -gt 0 ]; then
+    case $1 in
+        sh|shell)
+            supervisorctl_cmd
+            ;;
+        *)
+            supervisorctl_cmd $*
+            ;;
+    esac
+else
+    supervisord_start
+fi

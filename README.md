@@ -1,36 +1,36 @@
 # deploy-ss
 
-Deploy new ss instance via ansible. `ssserver` is supervisored by supervisor.
-And `yum` is assumed.
+Deploy shadowsocks instance instantly via ansible.
 
-NOTE: you have to config the ss instance first, like sshd and config firewalld
-etc. `delploy-ss` assumes that you login as `root` via port 22 and the firewall
-has already been configured for `shadowsocks`.
+`ssserver` is supervisored by supervisor. And `yum` is assumed. At the mean
+time, the responsibility of configuring sshd and firewall etc. falls upon your
+shoulder. delploy-ss assumes that you can login as root via port 22 and the
+firewall is happy with the ports used by shadowsocks.
 
 # Config
 
 Before use this ansible playbook, you have to
 
-1. create the `hosts` file to config the ip or domain name of your ss instance
-2. create the `template/ss.conf.j2` to config your ss instance
+1. create the `hosts` file to name your ss instance, ip or domain name.
+2. create the `template/ss.conf.j2` to config your ss instance, port, password,
+   authentication method, etc..
 
-Examples are provided as `*.example` files. You can have a look at it, modify
-it according to your need, and then move or copy it without its `*.example`
-suffix.
+Examples are provided as `*.example` files. Have a look at it, modify it
+according to your need, and move or copy it without its `.example` suffix.
 
 # Deploy
 
-`ansible` is required. Then, execute
+ansible is required. Then, run
 
     ansible-playbook deploy.yml -k
 
-If you have already upload your pubkey to the ss instance, then `-k` should be
-leave out.
+If you have properly configured the ssh keys of your ss instance, then `-k` can
+be left out.
 
 # sssuper
 
-`deploy-ss` also renders a cmd named `sssuper` to `/opt/ss/` to ease the
-interaction with `supervisor`
+deploy-ss also renders a cmd named `sssuper` under `/opt/ss/` to ease the
+interaction with supervisor
 
     # start the supervisord
     /opt/sssuper
@@ -45,15 +45,15 @@ interaction with `supervisor`
 
 # Under the Hood
 
-`supervisor` and `shadowsocks` will be installed to a virtualenv located at
-`/opt/ss`.  Configuration files will be put under this location with a `.conf`
-suffix.  Logs will be put under `/var/log/ss`.
+supervisor and shadowsocks will be installed to a virtualenv located at
+`/opt/ss`.  Configuration files are put under this location with a `.conf`
+suffix. Logs are put under `/var/log/ss`.
 
-Thus, to start the shell of `supervisorctl`, run
+Thus, to start the `supervisorctl` shell, run
 
     /opt/ss/bin/supervisorctl -c /opt/ss/supervisor.conf
 
-to rm `deploy-ss` completely, run
+to rm deploy-ss completely, run
 
     rm -rf /opt/ss /var/log/ss
 

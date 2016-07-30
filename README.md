@@ -33,15 +33,15 @@ deploy-ss also renders a cmd named `sssuper` under `/opt/ss/` to ease the
 interaction with supervisor
 
     # start the supervisord
-    /opt/sssuper
+    /opt/ss/sssuper
 
     # enter the supervisorctl shell
-    /opt/sssuper sh
+    /opt/ss/sssuper sh
 
     # other args are all passed to supervisorctl
-    /opt/sssuper status
-    /opt/sssuper tail -f ss
-    /opt/sssuper stop ss
+    /opt/ss/sssuper status
+    /opt/ss/sssuper tail -f ss
+    /opt/ss/sssuper stop ss
 
 # Under the Hood
 
